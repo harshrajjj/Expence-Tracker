@@ -82,7 +82,18 @@ export const fetchBudgetVsActual = async (month, year) => {
       params: { month, year },
       __expectedArrayResponse: true
     };
+
+    // First try the test endpoint to verify API is working
+    try {
+      await axios.get(`${API_URL}/test`);
+      console.log('API test endpoint is working');
+    } catch (testError) {
+      console.warn('API test endpoint failed:', testError);
+      // Continue anyway
+    }
+
     const response = await axios.get(`${API_URL}/budget-vs-actual`, config);
+    console.log('Budget vs actual response:', response.data);
     return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
     console.error('Error fetching budget vs actual:', error);

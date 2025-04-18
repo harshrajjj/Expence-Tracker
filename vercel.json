@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "server/index.js",
+      "src": "api/*.js",
       "use": "@vercel/node"
     },
     {
@@ -16,16 +16,8 @@
   ],
   "routes": [
     {
-      "src": "/api/test",
-      "dest": "server/api/test.js"
-    },
-    {
-      "src": "/api/budget-vs-actual",
-      "dest": "server/api/budget-vs-actual.js"
-    },
-    {
       "src": "/api/(.*)",
-      "dest": "server/index.js"
+      "dest": "/api/$1.js"
     },
     {
       "handle": "filesystem"

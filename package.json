@@ -6,16 +6,17 @@
   "scripts": {
     "install-client": "cd client && npm install",
     "install-server": "cd server && npm install",
-    "install-all": "npm run install-client && npm run install-server",
+    "install-api": "cd api && npm install",
+    "install-all": "npm run install-client && npm run install-server && npm run install-api",
     "build-client": "cd client && npm run build",
-    "build-server": "cd server && npm run vercel-build",
-    "build": "npm run build-client && npm run build-server",
+    "build": "npm run build-client",
     "start-client": "cd client && npm start",
     "start-server": "cd server && npm start",
+    "start-api": "cd api && npm start",
     "dev-client": "cd client && npm run dev",
     "dev-server": "cd server && npm run dev",
     "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\"",
-    "vercel-build": "npm run build"
+    "vercel-build": "npm run build-client"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
