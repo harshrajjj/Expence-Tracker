@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import BudgetForm from './BudgetForm'
 import BudgetList from './BudgetList'
-import BudgetVsActual from './BudgetVsActual';
+import { BudgetVsActual } from './BudgetVsActual';
 import { fetchBudgets } from '../api'
 import LoadingSpinner from './LoadingSpinner'
 
@@ -9,12 +9,12 @@ const BudgetManager = () => {
   const [budgets, setBudgets] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  
+
   // Get current month and year
   const currentDate = new Date()
   const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1) // 1-12
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear())
-  
+
   // Load budgets when component mounts or month/year changes
   useEffect(() => {
     const loadBudgets = async () => {
@@ -29,15 +29,15 @@ const BudgetManager = () => {
         setLoading(false)
       }
     }
-    
+
     loadBudgets()
   }, [selectedMonth, selectedYear])
-  
+
   // Handle budget saved
   const handleBudgetSaved = (newBudget) => {
     // Check if budget already exists
     const existingIndex = budgets.findIndex(b => b.id === newBudget.id)
-    
+
     if (existingIndex >= 0) {
       // Update existing budget
       setBudgets(prev => [
@@ -50,12 +50,12 @@ const BudgetManager = () => {
       setBudgets(prev => [...prev, newBudget])
     }
   }
-  
+
   // Handle budget deleted
   const handleBudgetDeleted = (id) => {
     setBudgets(prev => prev.filter(budget => budget.id !== id))
   }
-  
+
   // Generate month options
   const months = [
     { value: 1, label: 'January' },
@@ -71,7 +71,7 @@ const BudgetManager = () => {
     { value: 11, label: 'November' },
     { value: 12, label: 'December' }
   ]
-  
+
   // Generate year options (current year and 2 years before/after)
   const currentYear = currentDate.getFullYear()
   const years = [
@@ -81,7 +81,7 @@ const BudgetManager = () => {
     currentYear + 1,
     currentYear + 2
   ]
-  
+
   return (
     <div>
       <div className="mb-6 bg-white shadow sm:rounded-lg border border-gray-200">
@@ -94,7 +94,7 @@ const BudgetManager = () => {
             </span>
             Budget Period
           </h3>
-          
+
           <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label htmlFor="month" className="block text-sm font-medium text-gray-700 mb-1">Month</label>
@@ -109,7 +109,7 @@ const BudgetManager = () => {
                 ))}
               </select>
             </div>
-            
+
             <div>
               <label htmlFor="year" className="block text-sm font-medium text-gray-700 mb-1">Year</label>
               <select
@@ -126,7 +126,7 @@ const BudgetManager = () => {
           </div>
         </div>
       </div>
-      
+
       {loading ? (
         <div className="flex justify-center items-center py-12">
           <LoadingSpinner size="large" />
@@ -148,20 +148,20 @@ const BudgetManager = () => {
       ) : (
         <>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <BudgetForm 
-              onBudgetSaved={handleBudgetSaved} 
-              selectedMonth={selectedMonth} 
-              selectedYear={selectedYear} 
+            <BudgetForm
+              onBudgetSaved={handleBudgetSaved}
+              selectedMonth={selectedMonth}
+              selectedYear={selectedYear}
             />
-            <BudgetList 
-              budgets={budgets} 
-              onBudgetDeleted={handleBudgetDeleted} 
+            <BudgetList
+              budgets={budgets}
+              onBudgetDeleted={handleBudgetDeleted}
             />
           </div>
-          
-          <BudgetVsActual 
-            selectedMonth={selectedMonth} 
-            selectedYear={selectedYear} 
+
+          <BudgetVsActual
+            selectedMonth={selectedMonth}
+            selectedYear={selectedYear}
           />
         </>
       )}
