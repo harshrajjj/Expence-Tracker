@@ -1,8 +1,32 @@
 import axios from 'axios'
 
-// Use relative URL in production, absolute URL in development
-// For Vercel deployment, we always use relative URLs
+// Use relative URL for API endpoints
 const API_URL = '/api'
+
+// Add a request interceptor to handle errors
+axios.interceptors.request.use(function (config) {
+  // Do something before request is sent
+  return config;
+}, function (error) {
+  // Do something with request error
+  console.error('Request error:', error);
+  return Promise.reject(error);
+});
+
+// Add a response interceptor to handle errors
+axios.interceptors.response.use(function (response) {
+  // Any status code that lie within the range of 2xx cause this function to trigger
+  return response;
+}, function (error) {
+  // Any status codes that falls outside the range of 2xx cause this function to trigger
+  console.error('Response error:', error);
+  // For GET requests, return empty data instead of rejecting
+  if (error.config && error.config.method === 'get') {
+    console.warn('Returning empty data for failed GET request');
+    return Promise.resolve({ data: Array.isArray(error.config.__expectedArrayResponse) ? [] : {} });
+  }
+  return Promise.reject(error);
+});
 
 // Function to fetch all categories
 export const fetchCategories = async () => {
@@ -53,14 +77,17 @@ export const deleteBudget = async (id) => {
 // Function to fetch budget vs actual spending
 export const fetchBudgetVsActual = async (month, year) => {
   try {
-    const response = await axios.get(`${API_URL}/budget-vs-actual`, {
-      params: { month, year }
-    })
-    return response.data
+    // Mark that we expect an array response
+    const config = {
+      params: { month, year },
+      __expectedArrayResponse: true
+    };
+    const response = await axios.get(`${API_URL}/budget-vs-actual`, config);
+    return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
-    console.error('Error fetching budget vs actual:', error)
+    console.error('Error fetching budget vs actual:', error);
     // Return empty array instead of throwing to prevent component crashes
-    return []
+    return [];
   }
 }
 

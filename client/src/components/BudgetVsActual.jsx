@@ -11,8 +11,23 @@ export const BudgetVsActual = ({ selectedMonth, selectedYear }) => {
     const loadData = async () => {
       try {
         setLoading(true)
+        setError('')
+
+        // First try the test endpoint to see if API is working
+        try {
+          const testResponse = await fetch('/api/test')
+          if (!testResponse.ok) {
+            console.warn('API test endpoint failed:', testResponse.status)
+          } else {
+            console.log('API test endpoint working')
+          }
+        } catch (testErr) {
+          console.warn('API test request failed:', testErr)
+        }
+
         // Fetch budget vs actual data from the API
         const comparisonData = await fetchBudgetVsActual(selectedMonth, selectedYear)
+
         // Make sure we have valid data
         if (Array.isArray(comparisonData)) {
           setData(comparisonData)
@@ -23,6 +38,7 @@ export const BudgetVsActual = ({ selectedMonth, selectedYear }) => {
       } catch (err) {
         console.error('Error loading expense data:', err)
         setError(`Failed to load expense data: ${err.message || 'Unknown error'}`)
+        setData([])
       } finally {
         setLoading(false)
       }

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import BudgetForm from './BudgetForm'
 import BudgetList from './BudgetList'
 import { BudgetVsActual } from './BudgetVsActual';
+import BudgetVsActualFallback from './BudgetVsActualFallback';
 import { fetchBudgets } from '../api'
 import LoadingSpinner from './LoadingSpinner'
 
@@ -9,11 +10,27 @@ const BudgetManager = () => {
   const [budgets, setBudgets] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [apiAvailable, setApiAvailable] = useState(true)
 
   // Get current month and year
   const currentDate = new Date()
   const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1) // 1-12
   const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear())
+
+  // Check if API is available
+  useEffect(() => {
+    const checkApiAvailability = async () => {
+      try {
+        const response = await fetch('/api/test')
+        setApiAvailable(response.ok)
+      } catch (err) {
+        console.error('API availability check failed:', err)
+        setApiAvailable(false)
+      }
+    }
+
+    checkApiAvailability()
+  }, [])
 
   // Load budgets when component mounts or month/year changes
   useEffect(() => {
@@ -21,17 +38,22 @@ const BudgetManager = () => {
       try {
         setLoading(true)
         const data = await fetchBudgets(selectedMonth, selectedYear)
-        setBudgets(data)
+        setBudgets(Array.isArray(data) ? data : [])
       } catch (err) {
         console.error('Error loading budgets:', err)
         setError('Failed to load budgets')
+        setBudgets([])
       } finally {
         setLoading(false)
       }
     }
 
-    loadBudgets()
-  }, [selectedMonth, selectedYear])
+    if (apiAvailable) {
+      loadBudgets()
+    } else {
+      setLoading(false)
+    }
+  }, [selectedMonth, selectedYear, apiAvailable])
 
   // Handle budget saved
   const handleBudgetSaved = (newBudget) => {
@@ -159,10 +181,14 @@ const BudgetManager = () => {
             />
           </div>
 
-          <BudgetVsActual
-            selectedMonth={selectedMonth}
-            selectedYear={selectedYear}
-          />
+          {apiAvailable ? (
+            <BudgetVsActual
+              selectedMonth={selectedMonth}
+              selectedYear={selectedYear}
+            />
+          ) : (
+            <BudgetVsActualFallback />
+          )}
         </>
       )}
     </div>
