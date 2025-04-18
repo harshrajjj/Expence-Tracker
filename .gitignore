@@ -31,12 +31,3 @@ dist-ssr
 .env.test.local
 .env.production.local
 
-# Large files (>12KB)
-client/package-lock.json
-server/package-lock.json
-client/src/components/BudgetVsActual.jsx
-client/src/components/TransactionForm.jsx
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
