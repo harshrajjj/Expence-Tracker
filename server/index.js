@@ -258,12 +258,8 @@ app.delete('/api/transactions/:id', async (req, res) => {
 });
 
 // Connect to MongoDB and start server
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log('Connected to MongoDB');
-  });
-}).catch(err => {
-  console.error('Failed to connect to MongoDB. Server will not start:', err);
-  process.exit(1);
+connectDB().catch(err => {
+  console.error('❌ Failed to connect to MongoDB:', err);
 });
+
+module.exports = app;
