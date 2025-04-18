@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-const API_URL = 'http://localhost:8080/api'
+// Use relative URL in production, absolute URL in development
+// For Vercel deployment, we always use relative URLs
+const API_URL = '/api'
 
 // Function to fetch all categories
 export const fetchCategories = async () => {
@@ -57,7 +59,8 @@ export const fetchBudgetVsActual = async (month, year) => {
     return response.data
   } catch (error) {
     console.error('Error fetching budget vs actual:', error)
-    throw error
+    // Return empty array instead of throwing to prevent component crashes
+    return []
   }
 }
 

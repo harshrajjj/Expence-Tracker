@@ -1,0 +1,23 @@
+{
+  "name": "expense-tracker",
+  "version": "1.0.0",
+  "description": "Expense Tracker Application",
+  "private": true,
+  "scripts": {
+    "install-client": "cd client && npm install",
+    "install-server": "cd server && npm install",
+    "install-all": "npm run install-client && npm run install-server",
+    "build-client": "cd client && npm run build",
+    "build-server": "cd server && npm run vercel-build",
+    "build": "npm run build-client && npm run build-server",
+    "start-client": "cd client && npm start",
+    "start-server": "cd server && npm start",
+    "dev-client": "cd client && npm run dev",
+    "dev-server": "cd server && npm run dev",
+    "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\"",
+    "vercel-build": "npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

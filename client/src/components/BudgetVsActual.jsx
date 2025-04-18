@@ -5,7 +5,7 @@ import LoadingSpinner from './LoadingSpinner'
 export const BudgetVsActual = ({ selectedMonth, selectedYear }) => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [data, setData] = useState(null)
+  const [data, setData] = useState([])
 
   useEffect(() => {
     const loadData = async () => {
@@ -13,10 +13,16 @@ export const BudgetVsActual = ({ selectedMonth, selectedYear }) => {
         setLoading(true)
         // Fetch budget vs actual data from the API
         const comparisonData = await fetchBudgetVsActual(selectedMonth, selectedYear)
-        setData(comparisonData)
+        // Make sure we have valid data
+        if (Array.isArray(comparisonData)) {
+          setData(comparisonData)
+        } else {
+          console.warn('Received non-array data from API:', comparisonData)
+          setData([])
+        }
       } catch (err) {
         console.error('Error loading expense data:', err)
-        setError('Failed to load expense data')
+        setError(`Failed to load expense data: ${err.message || 'Unknown error'}`)
       } finally {
         setLoading(false)
       }
@@ -52,7 +58,7 @@ export const BudgetVsActual = ({ selectedMonth, selectedYear }) => {
     <div className="bg-white shadow sm:rounded-lg border border-gray-200 p-6">
       <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Budget vs. Actual</h3>
 
-      {data && data.length > 0 ? (
+      {Array.isArray(data) && data.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
