@@ -13,8 +13,6 @@ const BudgetVsActual = ({ selectedMonth, selectedYear }) => {
       try {
         setLoading(true);
         const result = await fetchBudgetVsActual(selectedMonth, selectedYear);
-        
-        // Transform data for the chart
         const transformedData = result.map(item => ({
           category: item.category,
           Budget: item.budgetAmount,
@@ -22,7 +20,6 @@ const BudgetVsActual = ({ selectedMonth, selectedYear }) => {
           difference: item.difference,
           percentUsed: item.percentUsed
         }));
-
         setData(transformedData);
         setError('');
       } catch (err) {

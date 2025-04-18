@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import BudgetForm from './BudgetForm'
 import BudgetList from './BudgetList'
-import BudgetVsActual from './BudgetVsActual'
+import BudgetVsActual from './BudgetVsActual';
 import { fetchBudgets } from '../api'
 import LoadingSpinner from './LoadingSpinner'
 
